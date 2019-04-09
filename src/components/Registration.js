@@ -11,46 +11,43 @@ import {
   Image,
   Button,
   CheckBox
-
+  
 } from 'react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
 
 import {
-  COLOR_PINK, COLOR_PINK_LIGHT,
-  COLOR_FACEBOOK, COLOR_PINK_MEDIUM, COLOR_GREEN}
+  COLOR_PINK, COLOR_PINK_LIGHT, 
+  COLOR_FACEBOOK, COLOR_PINK_MEDIUM, COLOR_GREEN} 
 from './myColors';
 
 export default class Registration extends Component {
     static navigationOptions = {
-        header: null,
+        header: null,    
       }
-
+      
       state = {
-
+        
      data:[{label:'Student'},{label:'Faculty'}],
       email:'',
     password1:'',
     password2:'',
     username:'',
-    is_student:true,
+    is_student:false,
     is_teacher:false,
     selectedButton:'Student'
       }
-
       UserRegistrationFunction = (selectedButton) =>{
-
+        
        if(selectedButton=='Student')
        {
-       var is_student='true';
         this.setState({is_student:true})
        }
        else
        {
-       var is_teacher='false';
         this.setState({is_teacher:true})
        }
-
-        fetch('http://172.20.10.2:8000/rest-auth/registration/', {
+      
+        fetch('http://172.20.10.5:8000/rest-auth/registration/', {
            method: 'POST',
            headers: {
              'Accept': 'application/json',
@@ -58,40 +55,40 @@ export default class Registration extends Component {
            },
            body: JSON.stringify({
              email: this.state.email,
-
+              
                  password1: this.state.password1,
                password2: this.state.password2,
                  username:this.state.username,
-                is_student:this.state.is_student,
-               is_teacher:this.state.is_teacher,
-
-
+                 is_student:this.state.is_student,
+               is_teacher:this.state.is_teacher
+               
+          
            })
-
+          
          }).then((response) => response.json())
                .then((responseJson) => {
-
+         
                  // If server response message same as Data Matched
-
+                
                  if(responseJson.key !=null )
                  {
-
-
+         
+                     
                   this.props.navigation.navigate("Login")
-
+         
                  }
                  else
                  {
                   Alert.alert(JSON.stringify(responseJson));
                  }
                   //  Alert.alert(JSON.stringify(responseJson));
-
+                
                }).catch((error) => {
                  console.error(error);
                });
-
+          
            }
-
+      
 onPress = data => this.setState({ data });
 
     render() {
@@ -109,7 +106,7 @@ onPress = data => this.setState({ data });
              <View style={styles.textInputContainer}>
               <TextInput
                 style={styles.textInput}
-
+               
                 placeholder="Enter your username"
                 placeholderTextColor='black'
                 onChangeText={username => this.setState({username})}
@@ -119,14 +116,14 @@ onPress = data => this.setState({ data });
             <View style={styles.textInputContainer}>
               <TextInput
                 style={styles.textInput}
-
+               
                 placeholder="Enter your email"
                 placeholderTextColor='black'
                 onChangeText={email => this.setState({email})}
               >
               </TextInput>
             </View>
-
+            
             <View style={styles.textInputContainer}>
               <TextInput
                 style={styles.textInput}
@@ -156,21 +153,21 @@ onPress = data => this.setState({ data });
                     Value = {selectedButton}
                 </Text> */}
                 <RadioGroup radioButtons={this.state.data} onPress={this.onPress} />
-
+              
             </View>
-
+           
             </View>
             <TouchableOpacity style={styles.RegisterButton} onPress={() => {
     this.UserRegistrationFunction(selectedButton);
   }} >
               <Text style={styles.loginButtonTitle} >Register</Text>
-
+              
             </TouchableOpacity>
-
-
-
+           
+          
+            
              </View>
-
+            
                  </View>
 
             </TouchableWithoutFeedback>
@@ -184,7 +181,7 @@ const styles = StyleSheet.create({
       flex: 1,
       flexDirection: 'column',
       justifyContent: 'center',
-      alignItems: 'stretch',
+      alignItems: 'stretch',  
       backgroundColor: COLOR_PINK_LIGHT
     },
     up: {
@@ -230,5 +227,5 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: 'white'
       },
-
+      
 })

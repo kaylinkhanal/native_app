@@ -1,7 +1,8 @@
+
 import { StyleSheet, StatusBar, TouchableOpacity, ScrollView, Text, View,AppRegistry,Image } from 'react-native';
 import {
-  COLOR_PINK, COLOR_PINK_LIGHT,
-  COLOR_FACEBOOK, COLOR_PINK_MEDIUM, COLOR_GREEN}
+  COLOR_PINK, COLOR_PINK_LIGHT, 
+  COLOR_FACEBOOK, COLOR_PINK_MEDIUM, COLOR_GREEN} 
 from './myColors';
 import { Avatar } from 'react-native-elements';
 import React, { Component } from 'react';
@@ -18,15 +19,26 @@ const items = [
 ];
 export default class StudentDashboard extends Component {
   static navigationOptions = {
-    header: null,
+    header: null,    
   }
-
+  
   _card = el => {
     console.log('Card: ' + el.name)
   };
   render() {
     return (
       <View style={styles.container}>
+        <View style={styles.up}>
+        <Avatar rounded
+  source={{
+    uri:
+      'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
+  }}
+  size="large"
+ 
+/>
+<Text>Niroj Humagain</Text>
+        </View>
       <View style={styles.dashboard}>
         <Dashboard items={items} background={true} card={this._card} column={2} />
         </View>
@@ -34,18 +46,26 @@ export default class StudentDashboard extends Component {
     );
   }
 }
-
+ 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'stretch',
+    alignItems: 'stretch',  
     backgroundColor: COLOR_PINK_LIGHT
   },
   dashboard:{
-    flex:1,
-    marginTop: 70
-  }
+    flex: 8,//70% of column
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
+  up: {
+    flex: 2,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 
 });

@@ -10,6 +10,7 @@ import {
   Keyboard,
   Image,
   Button,
+  BackHandler
   
   
 } from 'react-native'
@@ -24,6 +25,15 @@ export default class Login extends Component {
   static navigationOptions = {
     header: null,    
   }
+  componentDidMount() {
+  BackHandler.addEventListener('hardwareBackPress', function() {
+    // this.onMainScreen and this.goBack are just examples, you need to use your own implementation here
+    // Typically you would use the navigator here to go to the last state.
+  
+    
+    return true;
+  })
+}
   state = {
     
     
@@ -37,7 +47,7 @@ export default class Login extends Component {
 
     
     
-     fetch('http://172.20.10.2:8000/rest-auth/login/', {
+     fetch('http://172.20.10.5:8000/rest-auth/login/', {
        method: 'POST',
        headers: {
          'Accept': 'application/json',
@@ -54,14 +64,21 @@ export default class Login extends Component {
       
      }).then((response) => response.json())
            .then((responseJson) => {
-
+     
              // If server response message same as Data Matched
-             if(responseJson.key !=null )
+             if(responseJson.key !=null  )
                  {
-
-                     if(response)
-                  this.props.navigation.navigate("StudentDashboard")
          
+                     if(responseJson.user_type.is_student==true){
+                      this.props.navigation.navigate("StudentDashboard",initialRouteName="StudentDashboard")
+                     }
+                else if (responseJson.user_type.is_teacher==true)
+                {
+                  Alert.alert('Teacher Dashboard')
+                }
+         else{
+           Alert.alert('Must be Teacher or student')
+         }
                  }
              else{
      
@@ -124,11 +141,6 @@ export default class Login extends Component {
             <TouchableOpacity style={styles.RegisterButton}   onPress={() =>  this.props.navigation.navigate("Registration")} >
               <Text style={styles.loginButtonTitle}>Create an account</Text>
               
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.RegisterButton}   onPress={() =>  this.props.navigation.navigate("StudentRegister")} >
-              <Text style={styles.loginButtonTitle}>test ant design</Text>
-
             </TouchableOpacity>
           </View>
          
