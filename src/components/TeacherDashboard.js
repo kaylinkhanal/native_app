@@ -1,10 +1,11 @@
 
 import { StyleSheet, StatusBar, TouchableOpacity, ScrollView, Text, View,AppRegistry,Image } from 'react-native';
 import {
-  COLOR_PINK, COLOR_PINK_LIGHT,
-  COLOR_FACEBOOK, COLOR_PINK_MEDIUM, COLOR_GREEN}
+  COLOR_PINK, COLOR_PINK_LIGHT, 
+  COLOR_FACEBOOK, COLOR_PINK_MEDIUM, COLOR_GREEN} 
 from './myColors';
-import { Avatar } from 'react-native-elements';
+import { Avatar }  from 'react-native-elements';
+
 import React, { Component } from 'react';
 
 import Dashboard from 'react-native-dashboard';
@@ -17,15 +18,19 @@ const items = [
   { name: 'Notes', background: '#efcf02', icon: 'file' },
   { name: 'Stats', background: '#efcf02', icon: 'gear' },
 ];
-export default class StudentDashboard extends Component {
+export default class TeacherDashboard extends Component {
   static navigationOptions = {
-    header: null,
+    header: null,    
   }
-
-  _card = el => {
-    console.log('Card: ' + el.name)
+_card = el => {
+    console.log('Card: ' + el.name + this.props.navigation.state.params.usernam)
   };
   render() {
+    const { navigation } = this.props;
+    const username = navigation.getParam('username', 'NO-ID');
+    const email = navigation.getParam('email', 'NO-ID');
+
+
     return (
       <View style={styles.container}>
         <View style={styles.up}>
@@ -35,9 +40,13 @@ export default class StudentDashboard extends Component {
       'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
   }}
   size="large"
-
+ 
 />
-<Text>Niroj </Text>
+<TouchableOpacity style={styles.loginButton}  >
+              <Text style={styles.loginButtonTitle} >{username}</Text>
+            </TouchableOpacity>
+
+
         </View>
       <View style={styles.dashboard}>
         <Dashboard items={items} background={true} card={this._card} column={2} />
@@ -66,6 +75,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  loginButton: {
+    width: 100,
+    height: 30,
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLOR_PINK
+  },
+  loginButtonTitle: {
+    fontSize: 18,
+    color: 'white'
   },
 
 });

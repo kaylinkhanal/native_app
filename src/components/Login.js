@@ -25,15 +25,7 @@ export default class Login extends Component {
   static navigationOptions = {
     header: null,
   }
-  componentDidMount() {
-  BackHandler.addEventListener('hardwareBackPress', function() {
-    // this.onMainScreen and this.goBack are just examples, you need to use your own implementation here
-    // Typically you would use the navigator here to go to the last state.
 
-
-    return true;
-  })
-}
   state = {
 
 
@@ -42,9 +34,10 @@ export default class Login extends Component {
     username:''
 
   }
+
+
+
   UserLoginFunction = () =>{
-
-
 
 
      fetch('http://172.20.10.2:8000/rest-auth/login/', {
@@ -70,11 +63,19 @@ export default class Login extends Component {
                  {
 
                      if(responseJson.user_type.is_student==true){
-                      this.props.navigation.navigate("StudentDashboard",initialRouteName="StudentDashboard")
+                      this.props.navigation.navigate("StudentDashboard", {
+
+              username: this.state.username,
+            })
                      }
                 else if (responseJson.user_type.is_teacher==true)
                 {
-                                        this.props.navigation.navigate("TeacherDashboard",initialRouteName="TeacherDashboard")
+                                       this.props.navigation.navigate("TeacherDashboard",{
+
+              username: this.state.username,
+              email: this.state.email,
+              password: this.state.password
+            })
 
                 }
          else{
@@ -93,6 +94,7 @@ export default class Login extends Component {
        }
 
   render() {
+  const { navigate } = this.props.navigation
     const Divider = (props) => {
       return <View {...props}>
         <View style={styles.line}></View>
@@ -135,7 +137,7 @@ export default class Login extends Component {
               >
               </TextInput>
             </View>
-            <TouchableOpacity style={styles.loginButton} onPress={this.UserLoginFunction}>
+            <TouchableOpacity style={styles.loginButton}  onPress={this.UserLoginFunction}>
               <Text style={styles.loginButtonTitle} >LOGIN</Text>
             </TouchableOpacity>
             <Divider style={styles.divider}></Divider>
