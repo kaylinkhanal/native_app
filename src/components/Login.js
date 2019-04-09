@@ -11,43 +11,43 @@ import {
   Image,
   Button,
   BackHandler
-  
-  
+
+
 } from 'react-native'
 
 import {
-  COLOR_PINK, COLOR_PINK_LIGHT, 
-  COLOR_FACEBOOK, COLOR_PINK_MEDIUM, COLOR_GREEN} 
+  COLOR_PINK, COLOR_PINK_LIGHT,
+  COLOR_FACEBOOK, COLOR_PINK_MEDIUM, COLOR_GREEN}
 from './myColors';
 
 export default class Login extends Component {
-  
+
   static navigationOptions = {
-    header: null,    
+    header: null,
   }
   componentDidMount() {
   BackHandler.addEventListener('hardwareBackPress', function() {
     // this.onMainScreen and this.goBack are just examples, you need to use your own implementation here
     // Typically you would use the navigator here to go to the last state.
-  
-    
+
+
     return true;
   })
 }
   state = {
-    
-    
+
+
     email:'',
     password:'',
     username:''
-    
+
   }
   UserLoginFunction = () =>{
- 
 
-    
-    
-     fetch('http://172.20.10.5:8000/rest-auth/login/', {
+
+
+
+     fetch('http://172.20.10.2:8000/rest-auth/login/', {
        method: 'POST',
        headers: {
          'Accept': 'application/json',
@@ -58,23 +58,24 @@ export default class Login extends Component {
          email: this.state.email,
 
            password: this.state.password
-          
-      
+
+
        })
-      
-         }).then((response) => response.json())
+
+     }).then((response) => response.json())
            .then((responseJson) => {
-     
+
              // If server response message same as Data Matched
              if(responseJson.key !=null  )
                  {
+
                      if(responseJson.user_type.is_student==true){
                       this.props.navigation.navigate("StudentDashboard",initialRouteName="StudentDashboard")
                      }
                 else if (responseJson.user_type.is_teacher==true)
                 {
+                                        this.props.navigation.navigate("TeacherDashboard",initialRouteName="TeacherDashboard")
 
-                  this.props.navigation.navigate("TeacherDashboard",initialRouteName="TeacherDashboard")
                 }
          else{
            Alert.alert('Must be Teacher or student')
@@ -88,9 +89,9 @@ export default class Login extends Component {
            }).catch((error) => {
              console.error(error);
            });
-      
+
        }
-  
+
   render() {
     const Divider = (props) => {
       return <View {...props}>
@@ -104,7 +105,7 @@ export default class Login extends Component {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles.up}>
-            
+
             <Image
          style={{width: 130, height: 130,borderRadius: 130 / 2,    }}
           source={require('./images/collegelogo.png')}
@@ -117,7 +118,7 @@ export default class Login extends Component {
             <View style={styles.textInputContainer}>
               <TextInput
                 style={styles.textInput}
-               
+
                 placeholder="Enter your username"
                 placeholderTextColor='black'
                 onChangeText={username => this.setState({username})}
@@ -140,12 +141,12 @@ export default class Login extends Component {
             <Divider style={styles.divider}></Divider>
             <TouchableOpacity style={styles.RegisterButton}   onPress={() =>  this.props.navigation.navigate("Registration")} >
               <Text style={styles.loginButtonTitle}>Create an account</Text>
-              
+
             </TouchableOpacity>
           </View>
-         
 
-       
+
+
 
         </View>
       </TouchableWithoutFeedback>
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'stretch',  
+    alignItems: 'stretch',
     backgroundColor: COLOR_PINK_LIGHT
   },
   up: {
@@ -262,4 +263,3 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
 })
-

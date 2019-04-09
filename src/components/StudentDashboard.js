@@ -13,9 +13,9 @@ const items = [
   { name: 'Profile', background: '#3498db', icon: 'user' },
   { name: 'Attendance', background: '#3498db', icon: 'calendar' },
   { name: 'Assignment', background: '#efcf02', icon: 'briefcase' },
-  { name: 'Events', background: '#02ef1d', icon: 'users' },
-  { name: 'Notes', background: '#02cbef', icon: 'file' },
-  { name: 'Stats', background: '#ef5802', icon: 'gear' },
+  { name: 'Events', background: '#efcf02', icon: 'users' },
+  { name: 'Notes', background: '#efcf02', icon: 'file' },
+  { name: 'Stats', background: '#efcf02', icon: 'gear' },
 ];
 export default class StudentDashboard extends Component {
   static navigationOptions = {
@@ -37,7 +37,7 @@ export default class StudentDashboard extends Component {
   size="large"
  
 />
-<Text>Niroj Humagain</Text>
+<Text>Niroj </Text>
         </View>
       <View style={styles.dashboard}>
         <Dashboard items={items} background={true} card={this._card} column={2} />

@@ -17,7 +17,7 @@ const AppNavigator = createStackNavigator({
     },
     StudentDashboard:{
         screen:StudentDashboard
-    }
+    },
      TeacherDashboard:{
         screen:TeacherDashboard
     }

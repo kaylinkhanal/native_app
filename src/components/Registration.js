@@ -47,7 +47,7 @@ export default class Registration extends Component {
         this.setState({is_teacher:true})
        }
       
-        fetch('http://172.20.10.5:8000/rest-auth/registration/', {
+        fetch('http://172.20.10.2:8000/rest-auth/registration/', {
            method: 'POST',
            headers: {
              'Accept': 'application/json',
