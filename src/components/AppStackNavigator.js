@@ -2,6 +2,7 @@ import Login from './Login'
 import Splash from './Splash'
 import Registration from './Registration'
 import StudentDashboard from './StudentDashboard'
+import TeacherDashboard from './TeacherDashboard'
 import {createStackNavigator, createAppContainer} from 'react-navigation'
 const AppNavigator = createStackNavigator({
     //Screens   
@@ -16,6 +17,9 @@ const AppNavigator = createStackNavigator({
     },
     StudentDashboard:{
         screen:StudentDashboard
+    }
+     TeacherDashboard:{
+        screen:TeacherDashboard
     }
 }, {
     //settings

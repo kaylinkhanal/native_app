@@ -56,35 +56,35 @@ export default class Login extends Component {
        body: JSON.stringify({
         username:this.state.username,
          email: this.state.email,
-        
+
            password: this.state.password
           
       
        })
       
-     }).then((response) => response.json())
+         }).then((response) => response.json())
            .then((responseJson) => {
      
              // If server response message same as Data Matched
              if(responseJson.key !=null  )
                  {
-         
                      if(responseJson.user_type.is_student==true){
                       this.props.navigation.navigate("StudentDashboard",initialRouteName="StudentDashboard")
                      }
                 else if (responseJson.user_type.is_teacher==true)
                 {
-                  Alert.alert('Teacher Dashboard')
+
+                  this.props.navigation.navigate("TeacherDashboard",initialRouteName="TeacherDashboard")
                 }
          else{
            Alert.alert('Must be Teacher or student')
          }
                  }
              else{
-     
+
                Alert.alert(JSON.stringify(responseJson));
              }
-     
+
            }).catch((error) => {
              console.error(error);
            });

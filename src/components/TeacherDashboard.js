@@ -35,8 +35,15 @@ export default class TeacherDashboard extends Component {
       'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
   }}
   size="large"
+<<<<<<< Updated upstream
  
 />
+=======
+
+/>
+
+
+>>>>>>> Stashed changes
 <Text>Niroj Humagain</Text>
         </View>
       <View style={styles.dashboard}>

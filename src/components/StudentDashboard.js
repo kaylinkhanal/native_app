@@ -11,7 +11,7 @@ import Dashboard from 'react-native-dashboard';
 
 const items = [
   { name: 'Profile', background: '#3498db', icon: 'user' },
-  { name: 'Attendance', background: '#ef0202', icon: 'calendar' },
+  { name: 'Attendance', background: '#3498db', icon: 'calendar' },
   { name: 'Assignment', background: '#efcf02', icon: 'briefcase' },
   { name: 'Events', background: '#02ef1d', icon: 'users' },
   { name: 'Notes', background: '#02cbef', icon: 'file' },
