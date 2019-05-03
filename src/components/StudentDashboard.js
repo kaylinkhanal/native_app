@@ -1,34 +1,88 @@
-import { StyleSheet, StatusBar, TouchableOpacity, ScrollView, Text, View,AppRegistry,Image } from 'react-native';
+import { StyleSheet, StatusBar, TouchableOpacity, ScrollView, Text, View,AppRegistry,Image,AsyncStorage } from 'react-native';
 import {
-  COLOR_PINK, COLOR_PINK_LIGHT,
-  COLOR_FACEBOOK, COLOR_PINK_MEDIUM, COLOR_GREEN}
+  COLOR_PINK, COLOR_PINK_LIGHT, 
+  COLOR_FACEBOOK, COLOR_PINK_MEDIUM, COLOR_GREEN} 
 from './myColors';
-import { Avatar } from 'react-native-elements';
+import { Avatar }  from 'react-native-elements';
+
 import React, { Component } from 'react';
 
 import Dashboard from 'react-native-dashboard';
 
+import {DrawerNavigator} from 'react-navigation'
 const items = [
   { name: 'Profile', background: '#3498db', icon: 'user' },
-  { name: 'Attendance', background: '#ef0202', icon: 'calendar' },
+  { name: 'Attendance', background: '#3498db', icon: 'calendar' },
   { name: 'Assignment', background: '#efcf02', icon: 'briefcase' },
-  { name: 'Events', background: '#02ef1d', icon: 'users' },
-  { name: 'Notes', background: '#02cbef', icon: 'file' },
-  { name: 'Stats', background: '#ef5802', icon: 'gear' },
+  { name: 'Events', background: '#efcf02', icon: 'users' },
+  { name: 'Notes', background: '#efcf02', icon: 'file' },
+  { name: 'Stats', background: '#efcf02', icon: 'gear' },
 ];
 export default class StudentDashboard extends Component {
   static navigationOptions = {
     header: null,
+    
   }
+  constructor(props) {
+    super(props);
+    this.state = { dataSource: [],hasToken: false }
+    
+   // this.state = {date:"2016-05-15"}
+  }
+  
+  componentDidMount(){
+    console.log(this.props.navigation.state.params.username)
+    fetch("http://100.121.101.233:8000/users/users/"+this.props.navigation.state.params.username+"/")
+    .then(response => response.json())
+    .then((responseJson)=> {
+      this.setState({
+       
+       dataSource: responseJson
+      })
+      .catch(error=>console.log(error))
+    })
+    AsyncStorage.getItem('id_token').then((is_student) => {
+      console.log("token:"+is_student)
+    })
+  }
+_card = el => {
+ 
+ 
+    this.props.navigation.navigate(el.name, {
 
-  _card = el => {
-    console.log('Card: ' + el.name)
+      user: this.state.dataSource.id,
+      key:this.props.navigation.state.params.key,
+      username:this.props.navigation.state.params.username
+    })
   };
   render() {
+    const { navigation } = this.props;
+    const username = navigation.getParam('username', 'NO-ID');
+    const key = navigation.getParam('key', 'NO-ID');
+console.log(key)
+console.log(this.state.dataSource)
+console.log(this.state.hasToken)
+
     return (
+      
       <View style={styles.container}>
+        <View style={styles.up}>
+        <Avatar rounded
+  source={{
+    uri:
+      'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
+  }}
+  size="large"
+
+/>
+<TouchableOpacity style={styles.loginButton}  >
+              <Text style={styles.loginButtonTitle} >{username}</Text>
+            </TouchableOpacity>
+
+
+        </View>
       <View style={styles.dashboard}>
-        <Dashboard items={items} background={true} card={this._card} column={2} />
+        <Dashboard items={items} background={true} card={this._card} column={2}  />
         </View>
       </View>
     );
@@ -44,8 +98,28 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR_PINK_LIGHT
   },
   dashboard:{
-    flex:1,
-    marginTop: 70
-  }
+    flex: 8,//70% of column
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
+  up: {
+    flex: 2,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  loginButton: {
+    width: 100,
+    height: 30,
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLOR_PINK
+  },
+  loginButtonTitle: {
+    fontSize: 18,
+    color: 'white'
+  },
 
 });

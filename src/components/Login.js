@@ -10,6 +10,8 @@ import {
   Keyboard,
   Image,
   Button,
+  BackHandler,
+  AsyncStorage
   
   
 } from 'react-native'
@@ -18,12 +20,21 @@ import {
   COLOR_PINK, COLOR_PINK_LIGHT, 
   COLOR_FACEBOOK, COLOR_PINK_MEDIUM, COLOR_GREEN} 
 from './myColors';
-
+const STORAGE_KEY = 'ASYNC_STORAGE_NAME_EXAMPLE'
 export default class Login extends Component {
   
   static navigationOptions = {
     header: null,    
   }
+//   componentDidMount() {
+//   BackHandler.addEventListener('hardwareBackPress', function() {
+//     // this.onMainScreen and this.goBack are just examples, you need to use your own implementation here
+//     // Typically you would use the navigator here to go to the last state.
+  
+    
+//     return true;
+//   })
+// }
   state = {
     
     
@@ -32,12 +43,13 @@ export default class Login extends Component {
     username:''
     
   }
+  
   UserLoginFunction = () =>{
  
 
     
     
-     fetch('http://172.20.10.2:8000/rest-auth/login/', {
+     fetch('http://100.121.101.233:8000/rest-auth/login/', {
        method: 'POST',
        headers: {
          'Accept': 'application/json',
@@ -54,14 +66,32 @@ export default class Login extends Component {
       
      }).then((response) => response.json())
            .then((responseJson) => {
-
-             // If server response message same as Data Matched
-             if(responseJson.key !=null )
+     
+            console.log(responseJson)
+             // If server response message same as Data 
+             this.saveItem('id_token', this.state.username)
+             if(responseJson.key !=null  )
                  {
+                 
+                       if(responseJson.user_type.is_student==true){
+                      this.props.navigation.navigate("StudentDashboard", {
+                         
+                        username: this.state.username,
+                        key:responseJson.key,
+                      })
+                     }
+                else if (responseJson.user_type.is_teacher==true)
+                {
+                  this.props.navigation.navigate("TeacherDashboard",{
 
-                     if(response)
-                  this.props.navigation.navigate("StudentDashboard")
-         
+                    username: this.state.username,
+                    email: this.state.email,
+                    password: this.state.password
+                  })
+                }
+         else{
+           Alert.alert('Must be Teacher or student')
+         }
                  }
              else{
      
@@ -73,8 +103,17 @@ export default class Login extends Component {
            });
       
        }
-  
+       async saveItem(item, selectedValue) {
+        try {
+          await AsyncStorage.setItem(item, selectedValue);
+        } catch (error) {
+          console.error('AsyncStorage error: ' + error.message);
+        }
+      }
+       
   render() {
+    
+    console.log(this._retrieveData);
     const Divider = (props) => {
       return <View {...props}>
         <View style={styles.line}></View>
@@ -92,7 +131,7 @@ export default class Login extends Component {
          style={{width: 130, height: 130,borderRadius: 130 / 2,    }}
           source={require('./images/collegelogo.png')}
         />
-            <Text style={styles.title}>
+          <Text style={styles.title}>
              Phonics Group Of Instution
           </Text>
           </View>
@@ -124,11 +163,6 @@ export default class Login extends Component {
             <TouchableOpacity style={styles.RegisterButton}   onPress={() =>  this.props.navigation.navigate("Registration")} >
               <Text style={styles.loginButtonTitle}>Create an account</Text>
               
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.RegisterButton}   onPress={() =>  this.props.navigation.navigate("StudentRegister")} >
-              <Text style={styles.loginButtonTitle}>test ant design</Text>
-
             </TouchableOpacity>
           </View>
          

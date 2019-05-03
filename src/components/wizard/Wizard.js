@@ -40,7 +40,7 @@ class Wizard extends PureComponent {
   };
 
   _onSubmit = () => {
-    fetch('http://172.20.10.2:8000/rest-auth/registration/', {
+    fetch('http://192.168.100.42:8000/rest-auth/registration/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

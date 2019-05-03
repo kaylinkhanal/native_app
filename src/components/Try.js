@@ -6,7 +6,7 @@ export default class Try extends Component{
     return this.props.namelists.map((namelist)=>{
 
     <Text>{namelist.title}</Text>
-
+console.log('Contributiontest');
     });
     }
     }
