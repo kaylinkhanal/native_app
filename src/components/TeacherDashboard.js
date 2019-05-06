@@ -1,4 +1,4 @@
-import { StyleSheet, StatusBar, TouchableOpacity, ScrollView, Text, View,AppRegistry,Image } from 'react-native';
+import { StyleSheet, StatusBar, TouchableOpacity, ScrollView, Text, View,AppRegistry,Image,AsyncStorage } from 'react-native';
 import {
   COLOR_PINK, COLOR_PINK_LIGHT, 
   COLOR_FACEBOOK, COLOR_PINK_MEDIUM, COLOR_GREEN} 
@@ -12,7 +12,7 @@ import Dashboard from 'react-native-dashboard';
 const items = [
   { name: 'Profile', background: '#3498db', icon: 'user' },
   { name: 'Attendance', background: '#3498db', icon: 'calendar' },
-  { name: 'Assignment', background: '#efcf02', icon: 'briefcase' },
+  { name: 'Subject', background: '#efcf02', icon: 'briefcase' },
   { name: 'Events', background: '#efcf02', icon: 'users' },
   { name: 'Notes', background: '#efcf02', icon: 'file' },
   { name: 'Stats', background: '#efcf02', icon: 'gear' },
@@ -21,21 +21,29 @@ export default class TeacherDashboard extends Component {
   static navigationOptions = {
     header: null,    
   }
+  constructor(props) {
+    super(props);
+    this.state = { username:'Preeti' }
+  }
 _card = el => {
-    console.log('Card: ' + el.name)
-    this.props.navigation.navigate(el.name, {
-
-      user: this.state.dataSource.id,
-      key:this.props.navigation.state.params.key,
-      username:this.props.navigation.state.params.username
-    })
+    console.log('Card: ' +'Teacher'+ el.name)
+    this.props.navigation.navigate('Teacher'+el.name)
   };
+  componentDidMount(){
+    AsyncStorage.getItem('username').then((username) => {
+    
+      this.setState({
+      username:username 
+      
+      })
+      
+      console.log("Username:"+this.state.username)
+     
+    })
+  }
   render() {
-    const { navigation } = this.props;
-    const username = navigation.getParam('username', 'NO-ID');
-    const email = navigation.getParam('email', 'NO-ID');
-
-
+    
+//console.log("Teacher USername:"+this.state.username)
     return (
       <View style={styles.container}>
         <View style={styles.up}>
@@ -48,7 +56,7 @@ _card = el => {
  
 />
 <TouchableOpacity style={styles.loginButton}  >
-              <Text style={styles.loginButtonTitle} >{username}</Text>
+              <Text style={styles.loginButtonTitle} >{this.state.username}</Text>
             </TouchableOpacity>
 
 

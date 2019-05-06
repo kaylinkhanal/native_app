@@ -21,7 +21,7 @@ import Dialog, {
 
 
 
-export default class Attendance extends Component {
+export default class TeacherAttendance extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -34,15 +34,33 @@ export default class Attendance extends Component {
           language:'',
           PickerValueHolder : '',
           drop_down_data:[],
-          date:''
+          date:'',
+          subject_name:''
+
          };
          
        }
       
        SubmitFunction = () => {
+
+
+              
         
-        fetch('http://100.121.101.233:8000/users/attendancerecord/', {
-          method: 'POST',
+        fetch('http://100.121.101.233:8000/users/subject/'+this.state.PickerValueHolder+'/').then((response) => response.json())
+          .then((responseJson) => {
+    
+            this.setState({
+                    subject_name:responseJson.subject_name.toString()
+                  
+                })
+              
+    
+          });
+          console.log("Subjectid:"+this.state.PickerValueHolder)
+
+          console.log("SubjectName:"+this.state.subject_name)
+         fetch('http://100.121.101.233:8000/users/attendancerecord/', {
+         method: 'POST',
     
           headers: {
             'Accept': 'application/json',
@@ -51,14 +69,14 @@ export default class Attendance extends Component {
             Authorization: `Token `+this.props.navigation.state.params.key,
     
           },
-          body:
-            JSON.stringify({
-              "subject_id":this.state.PickerValueHolder ,
-    "subject_name": this.state.Subject_name,
-    "full_name": this.state.fullname,
-    "Date": this.state.date,
-    "present": "true"
-            })
+         body:
+                JSON.stringify({
+                 
+        "subject_name": this.state.subject_name,
+        "full_name": this.state.fullname,
+        "Date": this.state.date,
+        "present": "true"
+                })
     
     
     
@@ -66,21 +84,32 @@ export default class Attendance extends Component {
         }).then((response) => response.json())
           .then((responseJson) => {
     
-            // If server response message same as Data Matched
-    
             Alert.alert(JSON.stringify(responseJson));
     
           });
     
-         this.setState({ defaultAnimationDialog: false });
-
-
-       }
+    
+      }
       
        componentDidMount(){
         var date = new Date().getDate(); //Current Date
         var month = new Date().getMonth() + 1; //Current Month
         var year = new Date().getFullYear(); //Current Year
+
+        AsyncStorage.getItem('username').then((username) => {
+              
+          this.setState({
+          username:username 
+          
+          })
+      }) 
+      AsyncStorage.getItem('key').then((key) => {
+              
+        this.setState({
+        key:key 
+        
+        })
+    }) 
         fetch("http://100.121.101.233:8000/users/student/")
         .then(response => response.json())
         .then((responseJson)=> {
@@ -98,6 +127,8 @@ export default class Attendance extends Component {
           this.setState({
 
             drop_down_data: responseJson,
+            PickerValueHolder:responseJson[0].subject_id,
+            subject_name:responseJson[0].subject_name
            
           }, function() {
             // In this block you can do something with new state.
@@ -136,15 +167,15 @@ export default class Attendance extends Component {
         defaultAnimationDialog: true,
         fullname:item,
       });
-     console.log(item);
-     console.log(this.state.drop_down_data)
+     
+     
     
    
     }
    
    
     render() {
-      
+     
   
       return (
    

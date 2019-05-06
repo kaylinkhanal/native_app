@@ -31,8 +31,8 @@ export default class StudentDashboard extends Component {
   }
   
   componentDidMount(){
-    console.log(this.props.navigation.state.params.username)
-    fetch("http://100.121.101.233:8000/users/users/"+this.props.navigation.state.params.username+"/")
+    //console.log(this.props.navigation.state.params.username)
+    fetch("http://100.121.101.233:8000/users/users/"+this.state.username+"/")
     .then(response => response.json())
     .then((responseJson)=> {
       this.setState({
@@ -41,27 +41,35 @@ export default class StudentDashboard extends Component {
       })
       .catch(error=>console.log(error))
     })
-    AsyncStorage.getItem('id_token').then((is_student) => {
-      console.log("token:"+is_student)
+    AsyncStorage.getItem('username').then((username) => {
+    
+      this.setState({
+      username:username 
+      
+      })
+      
+      console.log("Username:"+this.state.username)
+     
     })
+    // AsyncStorage.getItem('key').then((key) => {
+    
+    //   this.setState({
+    //   key:key 
+      
+    //   })
+      
+  
+    //  console.log("key:"+this.state.key)
+
+    // })
   }
 _card = el => {
  
  
-    this.props.navigation.navigate(el.name, {
-
-      user: this.state.dataSource.id,
-      key:this.props.navigation.state.params.key,
-      username:this.props.navigation.state.params.username
-    })
+    this.props.navigation.navigate('Student'+el.name)
   };
   render() {
-    const { navigation } = this.props;
-    const username = navigation.getParam('username', 'NO-ID');
-    const key = navigation.getParam('key', 'NO-ID');
-console.log(key)
-console.log(this.state.dataSource)
-console.log(this.state.hasToken)
+  
 
     return (
       
@@ -76,7 +84,7 @@ console.log(this.state.hasToken)
 
 />
 <TouchableOpacity style={styles.loginButton}  >
-              <Text style={styles.loginButtonTitle} >{username}</Text>
+              <Text style={styles.loginButtonTitle} >{this.state.username}</Text>
             </TouchableOpacity>
 
 

@@ -36,19 +36,164 @@ export default class Registration extends Component {
     is_teacher:false,
     selectedButton:'Student'
       }
+
+
       UserRegistrationFunction = (selectedButton) =>{
         
        if(selectedButton=='Student')
        {
-        this.setState({is_student:true})
-        Alert.alert(JSON.stringify(is_student))
+        this.setState({is_student: true}, function () {
+        fetch('http://100.121.101.233:8000/rest-auth/registration/', {
+           method: 'POST',
+           headers: {
+             'Accept': 'application/json',
+             'Content-Type': 'application/json',
+           },
+           body: JSON.stringify({
+             email: this.state.email,
+              
+                 password1: this.state.password1,
+               password2: this.state.password2,
+                 username:this.state.username,
+                 is_student:this.state.is_student,
+               is_teacher:this.state.is_teacher
+               
+          
+           })
+          
+         }).then((response) => response.json())
+               .then((responseJson) => {
+         
+                 // If server response message same as Data Matched
+                
+                 if(responseJson.key !=null )
+                 {
+         
+                 this.setState({
+                   key:responseJson.key
+                 })   
+                 fetch('http://100.121.101.233:8000/users/student/', {
+                  method: 'POST',
+            
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    // Authorization:  `280f577b841ee70418adecec5fdc918ea3ee0a07`,
+                    Authorization: `Token `+this.state.key,
+            
+                  },
+                  body:
+                    JSON.stringify({
+                      "user": responseJson.user
+                      
+                    })
+            
+            
+            
+            
+                }).then((response) => response.json())
+                  .then((responseJson) => {
+            
+                    // If server response message same as Data Matched
+            
+                    this.props.navigation.navigate("Login")
+            
+                  });
+                  
+         
+                 }
+                 else
+                 {
+                  Alert.alert(JSON.stringify(responseJson));
+                 }
+                  //  Alert.alert(JSON.stringify(responseJson));
+                
+               }).catch((error) => {
+                 console.error(error);
+               }); 
+
+          
+      }); 
+       
        }
        else if (selectedButton=='Faculty')
        {
-        this.setState({is_teacher:true})
-        Alert.alert(JSON.stringify(is_teacher))
+        this.setState({is_teacher: true}, function () {
+          fetch('http://100.121.101.233:8000/rest-auth/registration/', {
+             method: 'POST',
+             headers: {
+               'Accept': 'application/json',
+               'Content-Type': 'application/json',
+             },
+             body: JSON.stringify({
+               email: this.state.email,
+                
+                   password1: this.state.password1,
+                 password2: this.state.password2,
+                   username:this.state.username,
+                   is_student:this.state.is_student,
+                 is_teacher:this.state.is_teacher
+                 
+            
+             })
+            
+           }).then((response) => response.json())
+                 .then((responseJson) => {
+           
+                   // If server response message same as Data Matched
+                  
+                   if(responseJson.key !=null )
+                   {
+                    this.setState({
+                      key:responseJson.key
+                    })  
+                       
+                    fetch('http://100.121.101.233:8000/users/faculty/', {
+                  method: 'POST',
+            
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    // Authorization:  `280f577b841ee70418adecec5fdc918ea3ee0a07`,
+                    Authorization: `Token `+this.state.key,
+            
+                  },
+                  body:
+                    JSON.stringify({
+                      "user": responseJson.user
+                      
+                    })
+            
+            
+            
+            
+                }).then((response) => response.json())
+                  .then((responseJson) => {
+            
+                    // If server response message same as Data Matched
+            
+                    this.props.navigation.navigate("Login")
+            
+                  });
+                 
+           
+                   }
+                   else
+                   {
+                    Alert.alert(JSON.stringify(responseJson));
+                   }
+                    //  Alert.alert(JSON.stringify(responseJson));
+                  
+                 }).catch((error) => {
+                   console.error(error);
+                 }); 
+                 
+            
+        }); 
+  
+       
        }
-      
+       
         // fetch('http://100.121.101.233:8000/rest-auth/registration/', {
         //    method: 'POST',
         //    headers: {
@@ -92,7 +237,7 @@ export default class Registration extends Component {
           
            }
       
-onPress = data => this.setState({ data });
+onPress = data =>{ this.setState({ data }),console.log(data)};
 
     render() {
       let selectedButton = this.state.data.find(e => e.selected == true);
@@ -152,9 +297,7 @@ onPress = data => this.setState({ data });
               > Are u a?
               </Text>
               <View >
-                {/* <Text style={styles.RadiovalueText}>
-                    Value = {selectedButton}
-                </Text> */}
+                
                 <RadioGroup radioButtons={this.state.data} onPress={this.onPress} />
               
             </View>

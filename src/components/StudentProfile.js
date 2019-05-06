@@ -1,7 +1,8 @@
 
 import React, { Component } from 'react';
-import { Button, Image, StyleSheet, TextInput, View, Text, TouchableOpacity, ActivityIndicator, FlatList, Alert, Picker } from 'react-native';
-import { ImagePicker } from 'expo';
+import { Button, Image, StyleSheet, TextInput, View, Text, TouchableOpacity, ActivityIndicator, FlatList, Alert, Picker,AsyncStorage,ScrollView } from 'react-native';
+//import { ImagePicker } from 'expo';
+import ImagePicker from 'react-native-image-picker';
 import Icon from "react-native-vector-icons/Ionicons";
 import {
   COLOR_PINK, COLOR_PINK_LIGHT,
@@ -10,7 +11,12 @@ import {
   from './myColors';
 import { Avatar } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker'
-export default class Profile extends Component {
+const options={
+  title: 'my pic app',
+  takePhotoButtonTitle: 'Take photo with your camera',
+  chooseFromLibraryButtonTitle: 'Choose photo from library',
+}
+export default class StudentProfile extends Component {
   static navigationOptions = {
     title: 'Profile',
 
@@ -18,38 +24,39 @@ export default class Profile extends Component {
 
 
 
-  changeName(text) {
-    this.setstate({ username: text }) //How can I immediately set the defaultValue='PassMeIn' to nameNow? Because this method would never be called unless text is changed within TextInput
-  }
+  
   ProfileSubmitFunction = () => {
 
 
-    console.log(this.props.navigation.state.params.key)
+  //  console.log(this.props.navigation.state.params.key)
   
-    fetch('http://100.121.101.233:8000/users/student/'+this.props.navigation.state.params.user+'/', {
+  console.log("Users:"+this.state.user)
+  console.log("Key:"+this.state.key)
+
+    fetch('http://100.121.101.233:8000/users/student/'+this.state.user+'/', {
       method: 'PUT',
 
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        // Authorization:  `7419b3f8649566eeee73097184dd4541920af853`,
-        Authorization: `Token `+this.props.navigation.state.params.key,
+        // Authorization:  `280f577b841ee70418adecec5fdc918ea3ee0a07`,
+        Authorization: `Token `+this.state.key,
 
       },
       body:
         JSON.stringify({
-          "user": this.props.navigation.state.params.user,
+          "user": 1,
           //"photo": "",
           "full_name":this.state.dataSource.full_name,
-          "DOB": this.state.dataSource.DOB,
+          "DOB": this.state.dataSource.DOB.toString(),
           "first_sem_percentage": this.state.dataSource.first_sem_percentage,
           "second_sem_percentage": this.state.dataSource.second_sem_percentage,
           "third_sem_percentage": this.state.dataSource.third_sem_percentage,
           "fourth_sem_percentage":this.state.dataSource.fourth_sem_percentage,
           "fifth_sem_percentage": this.state.dataSource.fifth_sem_percentage,
-          "sixth_sem_percentage": 75.0,
-          "seventh_sem_percentage": 78.0,
-          "eighth_sem_percentage": 0.0,
+          "sixth_sem_percentage": this.state.dataSource.sixth_sem_percentage,
+          "seventh_sem_percentage": this.state.dataSource.seventh_sem_percentage,
+          "eighth_sem_percentage":this.state.dataSource.eighth_sem_percentage,
           "branch": this.state.dataSource.branch
         })
 
@@ -69,13 +76,93 @@ export default class Profile extends Component {
   }
   constructor(props) {
     super(props);
-    this.state = { isLoading: true }
+
+    this.state = { isLoading: true,
+      avatarSource: null,
+      pic:null,
+    user:'',
+     // user:null,
+      dataSource: [],
+       hasToken: false 
+    
+    }
+ 
+    
     
    // this.state = {date:"2016-05-15"}
   }
- 
+  myfun=()=>{
+    //alert('clicked');
+    console.log("myfun")
+  
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log('Response = ', response);
+  
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('Image Picker Error: ', response.error);
+      }
+  
+      else {
+        let source = { uri: response.uri };
+  
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+  
+        this.setState({
+          avatarSource: source,
+          pic:response.data
+        });
+      }
+    });
+  }
+  uploadPic=()=>{
+    // alert('ddf');
+    RNFetchBlob.fetch('POST', 'https://unentertaining-sect.000webhostapp.com/war/upload.php', {
+      Authorization : "Bearer access-token",
+      otherHeader : "foo",
+      'Content-Type' : 'multipart/form-data',
+    }, [
+      // element with property `filename` will be transformed into `file` in form data
+      { name : 'image', filename : 'avatar.png', data: this.state.pic}
+    ]).then((resp) => {
+      console.log(resp);
+      alert('your image uploaded successfully');
+      this.setState({avatarSource:null})
+    })
+  }
   componentDidMount() {
-    return fetch('http://100.121.101.233:8000/users/student/'+this.props.navigation.state.params.user+'/')
+    // AsyncStorage.getItem('username').then((username) => {
+    
+    //   this.setState({
+    //   username:username 
+      
+    //   })
+      
+    //   console.log("Username:"+this.state.username)
+     
+    // })
+    AsyncStorage.getItem('key').then((key) => {
+  
+      this.setState({
+      key:key 
+      
+      })
+      
+      console.log("key:"+this.state.key)
+     
+    })
+    AsyncStorage.getItem('user').then((user) => {
+    
+      this.setState({
+      user:user 
+      
+      })
+      
+      console.log("Usernamezz:"+this.state.user)
+      return fetch('http://100.121.101.233:8000/users/student/'+this.state.user+'/')
       .then((response) => response.json())
       .then((responseJson) => {
 
@@ -86,22 +173,36 @@ export default class Profile extends Component {
         }, function () {
 
         });
-        console.log(this.state.DOB);
-        
+        console.log(this.state.DOB+"hh");
+        console.log(responseJson)
 
       })
       .catch((error) => {
         console.error(error);
       });
+     
+    })
+    
+    console.log("Usernameaa:"+this.state.user)
+     
+ 
+     
+      
   }
+  //image Picker Try
+ 
   
   render() {
-    const { navigation } = this.props;
-    const user = navigation.getParam('user', 'NO-ID');
-    const key = navigation.getParam('key', 'NO-ID');
-    const username = navigation.getParam('username', 'NO-ID');
+    console.log("Usernamess:"+this.state.user)
+    const Divider = (props) => {
+      return <View {...props}>
+        <View style={styles.line}></View>
+        <Text style={styles.textOR}>OR</Text>
+        <View style={styles.line}></View>
+      </View>
+    }
 
-console.log("username:"+username+"userid:"+user+"key:"+key)
+//console.log("username:"+username+"userid:"+user+"key:"+key)
     
     if (this.state.isLoading) {
       return (
@@ -112,16 +213,17 @@ console.log("username:"+username+"userid:"+user+"key:"+key)
     }
 
     return (
-      <View style={styles.container}>
-        <View style={styles.up}>
+      <ScrollView style={styles.container}>
+        <View style={styles.up}   >
           <Avatar rounded
             source={{
               uri:
                 this.state.dataSource.photo,
             }}
             size="large"
-            showEditButton
-
+            showEditButton          
+            onEditPress={() => console.log("Works!!")}
+           
 
           />
         </View>
@@ -146,7 +248,7 @@ console.log("username:"+username+"userid:"+user+"key:"+key)
              <DatePicker
               style={{ flex: 1 }}
               //style={{width: 200}}
-              date={this.state.dataSource.DOB.toString()}
+              date={this.state.dataSource.DOB}
               mode="date"
               placeholder="select date"
               format="YYYY-MM-DD"
@@ -246,6 +348,51 @@ console.log("username:"+username+"userid:"+user+"key:"+key)
             />
 
           </View>
+          <View style={styles.SectionStyle}>
+
+<Text style={styles.TextStyle}>sixth_sem_percentage:</Text>
+
+<TextInput
+  style={{ flex: 1 }}
+  keyboardType="numeric"
+  value={this.state.dataSource.sixth_sem_percentage.toString()}
+  onChangeText={(sixth_sem_percentage) => { this.setState({ dataSource: { ...this.state.dataSource, sixth_sem_percentage: sixth_sem_percentage} }) }}
+
+  underlineColorAndroid="transparent"
+
+/>
+
+</View>
+<View style={styles.SectionStyle}>
+
+<Text style={styles.TextStyle}>seventh_sem_percentage:</Text>
+
+<TextInput
+  style={{ flex: 1 }}
+  keyboardType="numeric"
+  value={this.state.dataSource.seventh_sem_percentage.toString()}
+  onChangeText={(seventh_sem_percentage) => { this.setState({ dataSource: { ...this.state.dataSource, seventh_sem_percentage: second_sem_percentage} }) }}
+
+  underlineColorAndroid="transparent"
+
+/>
+
+</View>
+<View style={styles.SectionStyle}>
+
+<Text style={styles.TextStyle}>eighth_sem_percentage:</Text>
+
+<TextInput
+  style={{ flex: 1 }}
+  keyboardType="numeric"
+  value={this.state.dataSource.eighth_sem_percentage.toString()}
+  onChangeText={(eighth_sem_percentage) => { this.setState({ dataSource: { ...this.state.dataSource, eighth_sem_percentage: eighth_sem_percentage} }) }}
+
+  underlineColorAndroid="transparent"
+
+/>
+
+</View>
           
           <View style={styles.SectionStyle}>
 
@@ -279,7 +426,7 @@ console.log("username:"+username+"userid:"+user+"key:"+key)
           <Text style={styles.SubmitButtonTitle} >Submit</Text>
         </TouchableOpacity>
 
-      </View>
+      </ScrollView>
     );
   }
 

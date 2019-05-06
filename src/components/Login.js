@@ -67,27 +67,23 @@ export default class Login extends Component {
      }).then((response) => response.json())
            .then((responseJson) => {
      
-            console.log(responseJson)
+            console.log(responseJson.key)
              // If server response message same as Data 
-             this.saveItem('id_token', this.state.username)
+             this.saveItem('username', this.state.username)
+           this.saveItem('key', responseJson.key)
+             this.saveItem('user', responseJson.user.toString())
+
+
+
              if(responseJson.key !=null  )
                  {
                  
                        if(responseJson.user_type.is_student==true){
-                      this.props.navigation.navigate("StudentDashboard", {
-                         
-                        username: this.state.username,
-                        key:responseJson.key,
-                      })
+                      this.props.navigation.navigate("StudentDashboard")
                      }
                 else if (responseJson.user_type.is_teacher==true)
                 {
-                  this.props.navigation.navigate("TeacherDashboard",{
-
-                    username: this.state.username,
-                    email: this.state.email,
-                    password: this.state.password
-                  })
+                  this.props.navigation.navigate("TeacherDashboard")
                 }
          else{
            Alert.alert('Must be Teacher or student')

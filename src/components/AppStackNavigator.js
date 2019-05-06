@@ -4,8 +4,11 @@ import Splash from './Splash'
 import Registration from './Registration'
 import StudentDashboard from './StudentDashboard'
 import TeacherDashboard from './TeacherDashboard'
-import Attendance from './Attendance'
-import Profile from './Profile'
+import TeacherAttendance from './TeacherAttendance'
+import StudentProfile from './StudentProfile'
+import TeacherProfile from './TeacherProfile'
+import TeacherSubject from './TeacherSubject'
+import StudentAttendance from './StudentAttendance'
 import {createStackNavigator, createAppContainer} from 'react-navigation'
 const AppNavigator = createStackNavigator({
     //Screens   
@@ -24,11 +27,20 @@ const AppNavigator = createStackNavigator({
      TeacherDashboard:{
         screen:TeacherDashboard
     },
-    Attendance:{
-        screen:Attendance
+    TeacherAttendance:{
+        screen:TeacherAttendance
     },
-    Profile:{
-        screen:Profile
+    StudentProfile:{
+        screen:StudentProfile
+    },
+    TeacherProfile:{
+        screen:TeacherProfile
+    },
+    TeacherSubject:{
+        screen:TeacherSubject
+    },
+    StudentAttendance:{
+        screen:StudentAttendance
     }
 }, {
     //settings
